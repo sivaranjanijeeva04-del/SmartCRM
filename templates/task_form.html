@@ -1,0 +1,517 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+
+    {% if task %}
+        Edit Task | Smart CRM
+    {% else %}
+        Add Task | Smart CRM
+    {% endif %}
+
+{% endblock %}
+
+
+{% block page_title %}
+
+    {% if task %}
+        Edit Task
+    {% else %}
+        Add Task
+    {% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- =========================================
+     PAGE HEADER
+     ========================================= -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+
+            {% if task %}
+                Edit Task
+            {% else %}
+                Add New Task
+            {% endif %}
+
+        </h1>
+
+        <p>
+
+            {% if task %}
+                Update the task details and activity information.
+            {% else %}
+                Create a new customer activity or follow-up task.
+            {% endif %}
+
+        </p>
+
+    </div>
+
+
+    <div>
+
+        <a
+            href="{% url 'tasks' %}"
+            class="btn btn-secondary"
+        >
+            ← Back to Tasks
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     FORM CARD
+     ========================================= -->
+
+<div class="content-card form-card">
+
+
+    <div class="card-header">
+
+        <div>
+
+            <h2>
+                Task Information
+            </h2>
+
+            <p>
+                Enter the details of the activity you want to schedule.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================
+         FORM
+         ===================================== -->
+
+    <form
+        method="POST"
+        class="crm-form"
+    >
+
+        {% csrf_token %}
+
+
+
+        <!-- =================================
+             TASK DETAILS
+             ================================= -->
+
+        <div class="form-section">
+
+            <div class="form-section-title">
+
+                <h3>
+                    Task Details
+                </h3>
+
+                <p>
+                    Provide the basic information for this activity.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <!-- TASK TITLE -->
+
+                <div class="form-group">
+
+                    <label for="title">
+
+                        Task Title
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value="{{ task.title|default:'' }}"
+                        placeholder="Example: Follow up with customer"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- CUSTOMER -->
+
+                <div class="form-group">
+
+                    <label for="customer">
+
+                        Customer
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <select
+                        id="customer"
+                        name="customer"
+                        required
+                    >
+
+                        <option value="">
+                            Select Customer
+                        </option>
+
+
+                        {% for customer in customers %}
+
+                        <option
+                            value="{{ customer.id }}"
+                            {% if task.customer_id == customer.id %}
+                                selected
+                            {% endif %}
+                        >
+
+                            {{ customer.name }}
+
+                            {% if customer.company %}
+                                — {{ customer.company }}
+                            {% endif %}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- TASK TYPE -->
+
+                <div class="form-group">
+
+                    <label for="task_type">
+
+                        Task Type
+
+                    </label>
+
+                    <select
+                        id="task_type"
+                        name="task_type"
+                    >
+
+                        <option
+                            value="Call"
+                            {% if task.task_type == "Call" %}
+                                selected
+                            {% endif %}
+                        >
+                            📞 Call
+                        </option>
+
+
+                        <option
+                            value="Meeting"
+                            {% if task.task_type == "Meeting" %}
+                                selected
+                            {% endif %}
+                        >
+                            🤝 Meeting
+                        </option>
+
+
+                        <option
+                            value="Email"
+                            {% if task.task_type == "Email" %}
+                                selected
+                            {% endif %}
+                        >
+                            ✉️ Email
+                        </option>
+
+
+                        <option
+                            value="Follow-up"
+                            {% if task.task_type == "Follow-up" or not task %}
+                                selected
+                            {% endif %}
+                        >
+                            🔄 Follow-up
+                        </option>
+
+
+                        <option
+                            value="Other"
+                            {% if task.task_type == "Other" %}
+                                selected
+                            {% endif %}
+                        >
+                            📌 Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- DUE DATE -->
+
+                <div class="form-group">
+
+                    <label for="due_date">
+
+                        Due Date
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="date"
+                        id="due_date"
+                        name="due_date"
+                        value="{{ task.due_date|date:'Y-m-d' }}"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- DUE TIME -->
+
+                <div class="form-group">
+
+                    <label for="due_time">
+
+                        Due Time
+
+                    </label>
+
+                    <input
+                        type="time"
+                        id="due_time"
+                        name="due_time"
+                        value="{{ task.due_time|time:'H:i' }}"
+                    >
+
+                </div>
+
+
+
+                <!-- PRIORITY -->
+
+                <div class="form-group">
+
+                    <label for="priority">
+
+                        Priority
+
+                    </label>
+
+                    <select
+                        id="priority"
+                        name="priority"
+                    >
+
+                        <option
+                            value="Low"
+                            {% if task.priority == "Low" %}
+                                selected
+                            {% endif %}
+                        >
+                            Low
+                        </option>
+
+
+                        <option
+                            value="Medium"
+                            {% if task.priority == "Medium" or not task %}
+                                selected
+                            {% endif %}
+                        >
+                            Medium
+                        </option>
+
+
+                        <option
+                            value="High"
+                            {% if task.priority == "High" %}
+                                selected
+                            {% endif %}
+                        >
+                            High
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- STATUS -->
+
+                <div class="form-group">
+
+                    <label for="status">
+
+                        Task Status
+
+                    </label>
+
+                    <select
+                        id="status"
+                        name="status"
+                    >
+
+                        <option
+                            value="Pending"
+                            {% if task.status == "Pending" or not task %}
+                                selected
+                            {% endif %}
+                        >
+                            Pending
+                        </option>
+
+
+                        <option
+                            value="In Progress"
+                            {% if task.status == "In Progress" %}
+                                selected
+                            {% endif %}
+                        >
+                            In Progress
+                        </option>
+
+
+                        <option
+                            value="Completed"
+                            {% if task.status == "Completed" %}
+                                selected
+                            {% endif %}
+                        >
+                            Completed
+                        </option>
+
+
+                        <option
+                            value="Cancelled"
+                            {% if task.status == "Cancelled" %}
+                                selected
+                            {% endif %}
+                        >
+                            Cancelled
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             DESCRIPTION
+             ================================= -->
+
+        <div class="form-section">
+
+            <div class="form-section-title">
+
+                <h3>
+                    Task Description
+                </h3>
+
+                <p>
+                    Add additional notes or instructions for this task.
+                </p>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="description">
+
+                    Description
+
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="6"
+                    placeholder="Enter task description or notes..."
+                >{{ task.description|default:'' }}</textarea>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             FORM ACTIONS
+             ================================= -->
+
+        <div class="form-actions">
+
+
+            <a
+                href="{% url 'tasks' %}"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+
+                {% if task %}
+
+                    ✓ Update Task
+
+                {% else %}
+
+                    + Save Task
+
+                {% endif %}
+
+            </button>
+
+
+        </div>
+
+
+    </form>
+
+
+</div>
+
+
+{% endblock %}

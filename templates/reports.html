@@ -1,0 +1,856 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    Reports | Smart CRM
+{% endblock %}
+
+
+{% block page_title %}
+    Reports & Analytics
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- =========================================
+     PAGE HEADER
+     ========================================= -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+            Reports & Analytics
+        </h1>
+
+        <p>
+            Get a clear overview of your customers, leads, sales and tasks.
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     BUSINESS OVERVIEW
+     ========================================= -->
+
+<div class="stats-grid">
+
+
+    <!-- CUSTOMERS -->
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                👥
+            </div>
+
+            <span class="stat-label">
+                Total Customers
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+            {{ total_customers }}
+        </div>
+
+        <div class="stat-footer">
+
+            <span>
+                {{ active_customers }}
+            </span>
+
+            <span>
+                active customers
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- LEADS -->
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                🎯
+            </div>
+
+            <span class="stat-label">
+                Total Leads
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+            {{ total_leads }}
+        </div>
+
+        <div class="stat-footer">
+
+            <span>
+                {{ converted_leads }}
+            </span>
+
+            <span>
+                converted
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- DEALS -->
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                💼
+            </div>
+
+            <span class="stat-label">
+                Total Deals
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+            {{ total_deals }}
+        </div>
+
+        <div class="stat-footer">
+
+            <span>
+                {{ open_deals }}
+            </span>
+
+            <span>
+                open deals
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- REVENUE -->
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                ₹
+            </div>
+
+            <span class="stat-label">
+                Won Revenue
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+            ₹{{ total_revenue|floatformat:2 }}
+        </div>
+
+        <div class="stat-footer">
+
+            {{ won_deals }} won deals
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================
+     REPORT GRID
+     ========================================= -->
+
+<div class="reports-grid">
+
+
+    <!-- =====================================
+         CUSTOMER REPORT
+         ===================================== -->
+
+    <div class="content-card report-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Customer Overview
+                </h2>
+
+                <p>
+                    Customer account status
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="report-list">
+
+
+            <div class="report-row">
+
+                <div class="report-label">
+
+                    <span class="report-dot active-dot"></span>
+
+                    Active Customers
+
+                </div>
+
+                <strong>
+                    {{ active_customers }}
+                </strong>
+
+            </div>
+
+
+            <div class="report-row">
+
+                <div class="report-label">
+
+                    <span class="report-dot inactive-dot"></span>
+
+                    Inactive Customers
+
+                </div>
+
+                <strong>
+                    {{ inactive_customers }}
+                </strong>
+
+            </div>
+
+
+            <div class="report-row">
+
+                <div class="report-label">
+
+                    <span class="report-dot pending-dot"></span>
+
+                    Pending Customers
+
+                </div>
+
+                <strong>
+                    {{ pending_customers }}
+                </strong>
+
+            </div>
+
+
+            <div class="report-total">
+
+                <span>
+                    Total Customers
+                </span>
+
+                <strong>
+                    {{ total_customers }}
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================
+         LEAD PERFORMANCE
+         ===================================== -->
+
+    <div class="content-card report-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Lead Performance
+                </h2>
+
+                <p>
+                    Current lead pipeline
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="report-list">
+
+
+            <div class="report-row">
+
+                <div class="report-label">
+
+                    <span class="report-dot new-dot"></span>
+
+                    New
+
+                </div>
+
+                <strong>
+                    {{ new_leads }}
+                </strong>
+
+            </div>
+
+
+            <div class="report-row">
+
+                <div class="report-label">
+
+                    <span class="report-dot contacted-dot"></span>
+
+                    Contacted
+
+                </div>
+
+                <strong>
+                    {{ contacted_leads }}
+                </strong>
+
+            </div>
+
+
+            <div class="report-row">
+
+                <div class="report-label">
+
+                    <span class="report-dot qualified-dot"></span>
+
+                    Qualified
+
+                </div>
+
+                <strong>
+                    {{ qualified_leads }}
+                </strong>
+
+            </div>
+
+
+            <div class="report-row">
+
+                <div class="report-label">
+
+                    <span class="report-dot converted-dot"></span>
+
+                    Converted
+
+                </div>
+
+                <strong>
+                    {{ converted_leads }}
+                </strong>
+
+            </div>
+
+
+            <div class="report-row">
+
+                <div class="report-label">
+
+                    <span class="report-dot lost-dot"></span>
+
+                    Lost
+
+                </div>
+
+                <strong>
+                    {{ lost_leads }}
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================
+         SALES PIPELINE
+         ===================================== -->
+
+    <div class="content-card report-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Sales Pipeline
+                </h2>
+
+                <p>
+                    Deals by current stage
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="pipeline-container">
+
+
+            <div class="pipeline-item">
+
+                <div class="pipeline-header">
+
+                    <span>
+                        New
+                    </span>
+
+                    <strong>
+                        {{ new_deals }}
+                    </strong>
+
+                </div>
+
+                <div class="pipeline-bar">
+
+                    <div
+                        class="pipeline-fill pipeline-new"
+                        style="width:
+                        {% if total_deals %}
+                            {% widthratio new_deals total_deals 100 %}
+                        {% else %}
+                            0
+                        {% endif %}%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="pipeline-item">
+
+                <div class="pipeline-header">
+
+                    <span>
+                        Proposal
+                    </span>
+
+                    <strong>
+                        {{ proposal_deals }}
+                    </strong>
+
+                </div>
+
+                <div class="pipeline-bar">
+
+                    <div
+                        class="pipeline-fill pipeline-proposal"
+                        style="width:
+                        {% if total_deals %}
+                            {% widthratio proposal_deals total_deals 100 %}
+                        {% else %}
+                            0
+                        {% endif %}%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="pipeline-item">
+
+                <div class="pipeline-header">
+
+                    <span>
+                        Negotiation
+                    </span>
+
+                    <strong>
+                        {{ negotiation_deals }}
+                    </strong>
+
+                </div>
+
+                <div class="pipeline-bar">
+
+                    <div
+                        class="pipeline-fill pipeline-negotiation"
+                        style="width:
+                        {% if total_deals %}
+                            {% widthratio negotiation_deals total_deals 100 %}
+                        {% else %}
+                            0
+                        {% endif %}%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="pipeline-item">
+
+                <div class="pipeline-header">
+
+                    <span>
+                        Won
+                    </span>
+
+                    <strong>
+                        {{ won_deals }}
+                    </strong>
+
+                </div>
+
+                <div class="pipeline-bar">
+
+                    <div
+                        class="pipeline-fill pipeline-won"
+                        style="width:
+                        {% if total_deals %}
+                            {% widthratio won_deals total_deals 100 %}
+                        {% else %}
+                            0
+                        {% endif %}%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="pipeline-value">
+
+            <span>
+                Open Pipeline Value
+            </span>
+
+            <strong>
+                ₹{{ pipeline_value|floatformat:2 }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================
+         DEAL STATUS
+         ===================================== -->
+
+    <div class="content-card report-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Deal Status
+                </h2>
+
+                <p>
+                    Overall sales results
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="deal-status-grid">
+
+
+            <div class="deal-status-item">
+
+                <div class="deal-status-icon open">
+                    📈
+                </div>
+
+                <strong>
+                    {{ open_deals }}
+                </strong>
+
+                <span>
+                    Open Deals
+                </span>
+
+            </div>
+
+
+            <div class="deal-status-item">
+
+                <div class="deal-status-icon won">
+                    ✓
+                </div>
+
+                <strong>
+                    {{ won_deals }}
+                </strong>
+
+                <span>
+                    Won Deals
+                </span>
+
+            </div>
+
+
+            <div class="deal-status-item">
+
+                <div class="deal-status-icon lost">
+                    ×
+                </div>
+
+                <strong>
+                    {{ lost_deals }}
+                </strong>
+
+                <span>
+                    Lost Deals
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================
+         TASK OVERVIEW
+         ===================================== -->
+
+    <div class="content-card report-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Task Overview
+                </h2>
+
+                <p>
+                    Activity and task progress
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="task-report-grid">
+
+
+            <div class="task-report-item">
+
+                <span class="task-report-number">
+                    {{ pending_tasks }}
+                </span>
+
+                <span>
+                    Pending
+                </span>
+
+            </div>
+
+
+            <div class="task-report-item">
+
+                <span class="task-report-number">
+                    {{ in_progress_tasks }}
+                </span>
+
+                <span>
+                    In Progress
+                </span>
+
+            </div>
+
+
+            <div class="task-report-item">
+
+                <span class="task-report-number">
+                    {{ completed_tasks }}
+                </span>
+
+                <span>
+                    Completed
+                </span>
+
+            </div>
+
+
+            <div class="task-report-item">
+
+                <span class="task-report-number">
+                    {{ cancelled_tasks }}
+                </span>
+
+                <span>
+                    Cancelled
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="task-priority-section">
+
+            <h4>
+                Active Task Priority
+            </h4>
+
+
+            <div class="priority-summary">
+
+
+                <span>
+                    <i class="priority-dot high"></i>
+                    High: {{ high_priority_tasks }}
+                </span>
+
+
+                <span>
+                    <i class="priority-dot medium"></i>
+                    Medium: {{ medium_priority_tasks }}
+                </span>
+
+
+                <span>
+                    <i class="priority-dot low"></i>
+                    Low: {{ low_priority_tasks }}
+                </span>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================
+         REVENUE SUMMARY
+         ===================================== -->
+
+    <div class="content-card report-card revenue-report-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Revenue Summary
+                </h2>
+
+                <p>
+                    Sales value from your current database
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="revenue-report-content">
+
+
+            <div class="revenue-main">
+
+                <span>
+                    Won Revenue
+                </span>
+
+                <strong>
+                    ₹{{ total_revenue|floatformat:2 }}
+                </strong>
+
+            </div>
+
+
+            <div class="revenue-secondary">
+
+                <div>
+
+                    <span>
+                        Open Pipeline
+                    </span>
+
+                    <strong>
+                        ₹{{ pipeline_value|floatformat:2 }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Won Deals
+                    </span>
+
+                    <strong>
+                        {{ won_deals }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

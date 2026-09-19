@@ -1,0 +1,683 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    Sales | Smart CRM
+{% endblock %}
+
+
+{% block page_title %}
+    Sales
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- =========================================
+     PAGE HEADER
+     ========================================= -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+            Sales & Deals
+        </h1>
+
+        <p>
+            Manage your sales pipeline and track business deals.
+        </p>
+
+    </div>
+
+
+    <div>
+
+        <a
+            href="{% url 'add_deal' %}"
+            class="btn btn-primary"
+        >
+            + Add Deal
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     SALES SUMMARY
+     ========================================= -->
+
+<div class="stats-grid">
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                💼
+            </div>
+
+            <span class="stat-label">
+                Total Deals
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+            {{ deals|length }}
+        </div>
+
+        <div class="stat-footer">
+            All sales opportunities
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                📈
+            </div>
+
+            <span class="stat-label">
+                Open Deals
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+
+            {{ deals|length }}
+
+        </div>
+
+        <div class="stat-footer">
+            Active pipeline
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                ✓
+            </div>
+
+            <span class="stat-label">
+                Won Deals
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+            —
+        </div>
+
+        <div class="stat-footer">
+            Successfully closed
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                ₹
+            </div>
+
+            <span class="stat-label">
+                Sales Pipeline
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+            —
+        </div>
+
+        <div class="stat-footer">
+            Total deal value
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================
+     DEAL TABLE
+     ========================================= -->
+
+<div class="content-card">
+
+
+    <!-- TOOLBAR -->
+
+    <div class="table-toolbar">
+
+
+        <!-- SEARCH -->
+
+        <form
+            method="GET"
+            class="search-box"
+        >
+
+            <span class="search-icon">
+                🔍
+            </span>
+
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="Search deals or customers..."
+            >
+
+        </form>
+
+
+
+        <!-- FILTERS -->
+
+        <form
+            method="GET"
+            class="filter-form"
+        >
+
+            {% if search %}
+
+                <input
+                    type="hidden"
+                    name="search"
+                    value="{{ search }}"
+                >
+
+            {% endif %}
+
+
+            <select
+                name="stage"
+                onchange="this.form.submit()"
+            >
+
+                <option value="">
+                    All Stages
+                </option>
+
+                <option
+                    value="New"
+                    {% if selected_stage == "New" %}
+                        selected
+                    {% endif %}
+                >
+                    New
+                </option>
+
+                <option
+                    value="Proposal"
+                    {% if selected_stage == "Proposal" %}
+                        selected
+                    {% endif %}
+                >
+                    Proposal
+                </option>
+
+                <option
+                    value="Negotiation"
+                    {% if selected_stage == "Negotiation" %}
+                        selected
+                    {% endif %}
+                >
+                    Negotiation
+                </option>
+
+                <option
+                    value="Won"
+                    {% if selected_stage == "Won" %}
+                        selected
+                    {% endif %}
+                >
+                    Won
+                </option>
+
+                <option
+                    value="Lost"
+                    {% if selected_stage == "Lost" %}
+                        selected
+                    {% endif %}
+                >
+                    Lost
+                </option>
+
+            </select>
+
+
+
+            <select
+                name="status"
+                onchange="this.form.submit()"
+            >
+
+                <option value="">
+                    All Status
+                </option>
+
+                <option
+                    value="Open"
+                    {% if selected_status == "Open" %}
+                        selected
+                    {% endif %}
+                >
+                    Open
+                </option>
+
+                <option
+                    value="Won"
+                    {% if selected_status == "Won" %}
+                        selected
+                    {% endif %}
+                >
+                    Won
+                </option>
+
+                <option
+                    value="Lost"
+                    {% if selected_status == "Lost" %}
+                        selected
+                    {% endif %}
+                >
+                    Lost
+                </option>
+
+            </select>
+
+        </form>
+
+    </div>
+
+
+
+    <!-- DEAL COUNT -->
+
+    <div class="table-info">
+
+        <span>
+
+            Showing
+
+            <strong>
+                {{ deals|length }}
+            </strong>
+
+            deal{{ deals|length|pluralize }}
+
+        </span>
+
+    </div>
+
+
+
+    <!-- TABLE -->
+
+    <div class="table-responsive">
+
+        <table class="data-table">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Deal
+                    </th>
+
+                    <th>
+                        Customer
+                    </th>
+
+                    <th>
+                        Amount
+                    </th>
+
+                    <th>
+                        Stage
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Expected Close
+                    </th>
+
+                    <th>
+                        Created
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+            <tbody>
+
+
+                {% for deal in deals %}
+
+
+                <tr>
+
+
+                    <!-- DEAL NAME -->
+
+                    <td>
+
+                        <div class="table-person">
+
+
+                            <div class="customer-avatar">
+
+                                {{ deal.deal_name|slice:":2"|upper }}
+
+                            </div>
+
+
+                            <div class="table-person-info">
+
+                                <strong>
+                                    {{ deal.deal_name }}
+                                </strong>
+
+                                <span>
+                                    Deal #{{ deal.id }}
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+                    </td>
+
+
+
+                    <!-- CUSTOMER -->
+
+                    <td>
+
+                        <div class="table-person-info">
+
+                            <strong>
+                                {{ deal.customer.name }}
+                            </strong>
+
+
+                            {% if deal.customer.company %}
+
+                                <span>
+                                    {{ deal.customer.company }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+
+
+                    <!-- AMOUNT -->
+
+                    <td>
+
+                        <strong class="deal-amount">
+
+                            ₹{{ deal.amount|floatformat:2 }}
+
+                        </strong>
+
+                    </td>
+
+
+
+                    <!-- STAGE -->
+
+                    <td>
+
+                        {% if deal.stage == "New" %}
+
+                            <span class="stage-badge stage-new">
+                                New
+                            </span>
+
+                        {% elif deal.stage == "Proposal" %}
+
+                            <span class="stage-badge stage-proposal">
+                                Proposal
+                            </span>
+
+                        {% elif deal.stage == "Negotiation" %}
+
+                            <span class="stage-badge stage-negotiation">
+                                Negotiation
+                            </span>
+
+                        {% elif deal.stage == "Won" %}
+
+                            <span class="stage-badge stage-won">
+                                Won
+                            </span>
+
+                        {% elif deal.stage == "Lost" %}
+
+                            <span class="stage-badge stage-lost">
+                                Lost
+                            </span>
+
+                        {% else %}
+
+                            <span class="stage-badge">
+                                {{ deal.stage }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if deal.status == "Open" %}
+
+                            <span class="status-badge deal-open">
+                                Open
+                            </span>
+
+                        {% elif deal.status == "Won" %}
+
+                            <span class="status-badge lead-converted">
+                                Won
+                            </span>
+
+                        {% elif deal.status == "Lost" %}
+
+                            <span class="status-badge lead-lost">
+                                Lost
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-badge">
+                                {{ deal.status }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+
+                    <!-- EXPECTED CLOSE -->
+
+                    <td>
+
+                        {% if deal.expected_close_date %}
+
+                            <span class="date-text">
+
+                                {{ deal.expected_close_date|date:"d M Y" }}
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="muted-text">
+                                —
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+
+                    <!-- CREATED -->
+
+                    <td>
+
+                        <span class="date-text">
+
+                            {{ deal.created_at|date:"d M Y" }}
+
+                        </span>
+
+                    </td>
+
+
+
+                    <!-- ACTIONS -->
+
+                    <td>
+
+                        <div class="action-buttons">
+
+
+                            <a
+                                href="{% url 'edit_deal' deal.id %}"
+                                class="action-btn edit-btn"
+                                title="Edit Deal"
+                            >
+                                ✏️
+                            </a>
+
+
+                            <form
+                                method="POST"
+                                action="{% url 'delete_deal' deal.id %}"
+                                onsubmit="return confirm('Are you sure you want to delete this deal?');"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="action-btn delete-btn"
+                                    title="Delete Deal"
+                                >
+                                    🗑️
+                                </button>
+
+                            </form>
+
+
+                        </div>
+
+                    </td>
+
+
+                </tr>
+
+
+                {% empty %}
+
+
+                <!-- EMPTY STATE -->
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="empty-table-cell"
+                    >
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                💼
+                            </div>
+
+                            <h3>
+                                No deals found
+                            </h3>
+
+                            <p>
+                                Start managing your sales pipeline
+                                by adding your first deal.
+                            </p>
+
+                            <a
+                                href="{% url 'add_deal' %}"
+                                class="btn btn-primary"
+                            >
+                                + Add First Deal
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,594 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Leads | Smart CRM
+{% endblock %}
+
+{% block page_title %}
+Leads
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Leads</h1>
+
+        <p>
+            Manage and track your business leads.
+        </p>
+    </div>
+
+    <div>
+        <a
+            href="{% url 'add_lead' %}"
+            class="btn btn-primary"
+        >
+            + Add Lead
+        </a>
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     LEAD SUMMARY
+     ========================================= -->
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                🎯
+            </div>
+
+            <span class="stat-label">
+                Total Leads
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+            {{ leads|length }}
+        </div>
+
+        <div class="stat-footer">
+            Leads in pipeline
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                🆕
+            </div>
+
+            <span class="stat-label">
+                New Leads
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+
+            {% with count=0 %}
+
+                {% for lead in leads %}
+
+                    {% if lead.status == "New" %}
+                        {{ forloop.counter }}
+                    {% endif %}
+
+                {% endfor %}
+
+            {% endwith %}
+
+        </div>
+
+        <div class="stat-footer">
+            Newly created leads
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                ✓
+            </div>
+
+            <span class="stat-label">
+                Qualified
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+
+            {% for lead in leads %}
+
+                {% if lead.status == "Qualified" %}
+                    {{ forloop.counter }}
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+        <div class="stat-footer">
+            Qualified opportunities
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                ★
+            </div>
+
+            <span class="stat-label">
+                Converted
+            </span>
+
+        </div>
+
+        <div class="stat-value">
+
+            {% for lead in leads %}
+
+                {% if lead.status == "Converted" %}
+                    {{ forloop.counter }}
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+        <div class="stat-footer">
+            Converted leads
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     LEADS TABLE
+     ========================================= -->
+
+<div class="content-card">
+
+    <div class="table-toolbar">
+
+        <!-- SEARCH -->
+
+        <form
+            method="GET"
+            class="search-box"
+        >
+
+            <span class="search-icon">
+                🔍
+            </span>
+
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="Search leads..."
+            >
+
+        </form>
+
+
+        <!-- FILTERS -->
+
+        <form
+            method="GET"
+            class="filter-form"
+        >
+
+            {% if search %}
+
+                <input
+                    type="hidden"
+                    name="search"
+                    value="{{ search }}"
+                >
+
+            {% endif %}
+
+
+            <select
+                name="status"
+                onchange="this.form.submit()"
+            >
+
+                <option value="">
+                    All Status
+                </option>
+
+                <option
+                    value="New"
+                    {% if selected_status == "New" %}
+                        selected
+                    {% endif %}
+                >
+                    New
+                </option>
+
+                <option
+                    value="Contacted"
+                    {% if selected_status == "Contacted" %}
+                        selected
+                    {% endif %}
+                >
+                    Contacted
+                </option>
+
+                <option
+                    value="Qualified"
+                    {% if selected_status == "Qualified" %}
+                        selected
+                    {% endif %}
+                >
+                    Qualified
+                </option>
+
+                <option
+                    value="Converted"
+                    {% if selected_status == "Converted" %}
+                        selected
+                    {% endif %}
+                >
+                    Converted
+                </option>
+
+                <option
+                    value="Lost"
+                    {% if selected_status == "Lost" %}
+                        selected
+                    {% endif %}
+                >
+                    Lost
+                </option>
+
+            </select>
+
+
+            <select
+                name="source"
+                onchange="this.form.submit()"
+            >
+
+                <option value="">
+                    All Sources
+                </option>
+
+                <option
+                    value="Website"
+                    {% if selected_source == "Website" %}
+                        selected
+                    {% endif %}
+                >
+                    Website
+                </option>
+
+                <option
+                    value="LinkedIn"
+                    {% if selected_source == "LinkedIn" %}
+                        selected
+                    {% endif %}
+                >
+                    LinkedIn
+                </option>
+
+                <option
+                    value="Referral"
+                    {% if selected_source == "Referral" %}
+                        selected
+                    {% endif %}
+                >
+                    Referral
+                </option>
+
+                <option
+                    value="Advertisement"
+                    {% if selected_source == "Advertisement" %}
+                        selected
+                    {% endif %}
+                >
+                    Advertisement
+                </option>
+
+                <option
+                    value="Other"
+                    {% if selected_source == "Other" %}
+                        selected
+                    {% endif %}
+                >
+                    Other
+                </option>
+
+            </select>
+
+        </form>
+
+    </div>
+
+
+    <div class="table-info">
+
+        <span>
+            Showing
+            <strong>{{ leads|length }}</strong>
+            lead{{ leads|length|pluralize }}
+        </span>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Lead</th>
+                    <th>Contact</th>
+                    <th>Company</th>
+                    <th>Source</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for lead in leads %}
+
+                <tr>
+
+                    <!-- LEAD -->
+
+                    <td>
+
+                        <div class="table-person">
+
+                            <div class="customer-avatar">
+                                {{ lead.name|slice:":2"|upper }}
+                            </div>
+
+                            <div class="table-person-info">
+
+                                <strong>
+                                    {{ lead.name }}
+                                </strong>
+
+                                <span>
+                                    Lead #{{ lead.id }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- CONTACT -->
+
+                    <td>
+
+                        <div class="contact-info">
+
+                            <span>
+                                {{ lead.email }}
+                            </span>
+
+                            <span>
+                                {{ lead.phone }}
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- COMPANY -->
+
+                    <td>
+
+                        {% if lead.company %}
+
+                            {{ lead.company }}
+
+                        {% else %}
+
+                            <span class="muted-text">
+                                —
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- SOURCE -->
+
+                    <td>
+
+                        <span class="source-badge">
+                            {{ lead.source }}
+                        </span>
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if lead.status == "New" %}
+
+                            <span class="status-badge lead-new">
+                                New
+                            </span>
+
+                        {% elif lead.status == "Contacted" %}
+
+                            <span class="status-badge lead-contacted">
+                                Contacted
+                            </span>
+
+                        {% elif lead.status == "Qualified" %}
+
+                            <span class="status-badge lead-qualified">
+                                Qualified
+                            </span>
+
+                        {% elif lead.status == "Converted" %}
+
+                            <span class="status-badge lead-converted">
+                                Converted
+                            </span>
+
+                        {% elif lead.status == "Lost" %}
+
+                            <span class="status-badge lead-lost">
+                                Lost
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-badge">
+                                {{ lead.status }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- CREATED -->
+
+                    <td>
+
+                        <span class="date-text">
+                            {{ lead.created_at|date:"d M Y" }}
+                        </span>
+
+                    </td>
+
+
+                    <!-- ACTIONS -->
+
+                    <td>
+
+                        <div class="action-buttons">
+
+                            <a
+                                href="{% url 'edit_lead' lead.id %}"
+                                class="action-btn edit-btn"
+                                title="Edit Lead"
+                            >
+                                ✏️
+                            </a>
+
+
+                            <form
+                                method="POST"
+                                action="{% url 'delete_lead' lead.id %}"
+                                onsubmit="return confirm('Are you sure you want to delete this lead?');"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="action-btn delete-btn"
+                                    title="Delete Lead"
+                                >
+                                    🗑️
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="empty-table-cell"
+                    >
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                🎯
+                            </div>
+
+                            <h3>
+                                No leads found
+                            </h3>
+
+                            <p>
+                                Start building your sales pipeline
+                                by adding your first lead.
+                            </p>
+
+                            <a
+                                href="{% url 'add_lead' %}"
+                                class="btn btn-primary"
+                            >
+                                + Add First Lead
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

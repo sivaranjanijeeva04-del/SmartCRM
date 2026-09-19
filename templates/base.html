@@ -1,0 +1,450 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+            Smart CRM
+        {% endblock %}
+    </title>
+
+    <!-- Main CSS -->
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="app-container">
+
+
+    <!-- =================================
+         SIDEBAR
+         ================================= -->
+
+    <aside class="sidebar">
+
+
+        <!-- BRAND -->
+
+        <div class="brand">
+
+            <div class="brand-logo">
+                SC
+            </div>
+
+            <div class="brand-info">
+
+                <strong>
+                    Smart CRM
+                </strong>
+
+                <span>
+                    Business Management
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+
+            <div class="nav-section-title">
+                MAIN MENU
+            </div>
+
+
+            <!-- DASHBOARD -->
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    🏠
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- CUSTOMERS -->
+
+            <a
+                href="{% url 'customers' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    👥
+                </span>
+
+                <span>
+                    Customers
+                </span>
+
+            </a>
+
+
+            <!-- LEADS -->
+
+            <a
+                href="{% url 'leads' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    🎯
+                </span>
+
+                <span>
+                    Leads
+                </span>
+
+            </a>
+
+
+            <!-- SALES -->
+
+            <a
+                href="{% url 'sales' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    💼
+                </span>
+
+                <span>
+                    Sales
+                </span>
+
+            </a>
+
+
+            <!-- TASKS -->
+
+            <a
+                href="{% url 'tasks' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    📋
+                </span>
+
+                <span>
+                    Tasks
+                </span>
+
+            </a>
+
+
+            <!-- ANALYTICS -->
+
+            <div class="nav-section-title">
+                ANALYTICS
+            </div>
+
+
+            <!-- REPORTS -->
+
+            <a
+                href="{% url 'reports' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    📊
+                </span>
+
+                <span>
+                    Reports
+                </span>
+
+            </a>
+
+
+            <!-- SETTINGS / PROFILE -->
+
+            <a
+                href="{% url 'profile' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ⚙️
+                </span>
+
+                <span>
+                    Settings
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+        <!-- =================================
+             SIDEBAR BOTTOM
+             ================================= -->
+
+        <div class="sidebar-bottom">
+
+
+            <!-- HELP BOX -->
+
+            <div class="help-box">
+
+                <div class="help-icon">
+                    ?
+                </div>
+
+
+                <div class="help-content">
+
+                    <strong>
+                        Need Help?
+                    </strong>
+
+                    <small>
+                        Contact support
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- LOGOUT -->
+
+            <a
+                href="{% url 'logout' %}"
+                class="logout-link"
+            >
+
+                <span>
+                    ↪
+                </span>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =================================
+         MAIN CONTENT
+         ================================= -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+
+            <div class="topbar-left">
+
+                <h3>
+
+                    {% block page_title %}
+                        Smart CRM
+                    {% endblock %}
+
+                </h3>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+
+                <!-- NOTIFICATION -->
+
+                <button
+                    type="button"
+                    class="notification-btn"
+                    title="Notifications"
+                >
+
+                    🔔
+
+                    <span class="notification-dot"></span>
+
+                </button>
+
+
+                <!-- USER PROFILE -->
+
+                <div class="user-profile">
+
+
+                    <div class="user-avatar">
+
+                        {% if user.is_authenticated %}
+
+                            {{ user.username|slice:":1"|upper }}
+
+                        {% else %}
+
+                            U
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="user-info">
+
+                        {% if user.is_authenticated %}
+
+                            <strong>
+                                {{ user.username }}
+                            </strong>
+
+                            <span>
+                                CRM User
+                            </span>
+
+                        {% else %}
+
+                            <strong>
+                                Guest
+                            </strong>
+
+                            <span>
+                                Visitor
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- =================================
+             PAGE CONTENT
+             ================================= -->
+
+        <section class="page-content">
+
+
+            <!-- DJANGO MESSAGES -->
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="alert-message">
+
+                        {{ message }}
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+
+            <!-- CHILD PAGE CONTENT -->
+
+            {% block content %}
+
+            {% endblock %}
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- =================================
+     COMMON JAVASCRIPT
+     ================================= -->
+
+<script>
+
+
+    /*
+        Automatically hide Django
+        messages after 4 seconds
+    */
+
+    setTimeout(function () {
+
+        const alerts =
+            document.querySelectorAll(
+                ".alert-message"
+            );
+
+
+        alerts.forEach(function (alert) {
+
+            alert.style.opacity = "0";
+
+            alert.style.transition =
+                "opacity 0.3s ease";
+
+
+            setTimeout(function () {
+
+                alert.remove();
+
+            }, 300);
+
+        });
+
+    }, 4000);
+
+
+</script>
+
+
+</body>
+
+</html>

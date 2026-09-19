@@ -1,0 +1,473 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+
+    {% if lead %}
+        Edit Lead | Smart CRM
+    {% else %}
+        Add Lead | Smart CRM
+    {% endif %}
+
+{% endblock %}
+
+
+{% block page_title %}
+
+    {% if lead %}
+        Edit Lead
+    {% else %}
+        Add Lead
+    {% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+
+            {% if lead %}
+                Edit Lead
+            {% else %}
+                Add New Lead
+            {% endif %}
+
+        </h1>
+
+        <p>
+
+            {% if lead %}
+                Update the lead information below.
+            {% else %}
+                Add a new prospect to your sales pipeline.
+            {% endif %}
+
+        </p>
+
+    </div>
+
+
+    <div>
+
+        <a
+            href="{% url 'leads' %}"
+            class="btn btn-secondary"
+        >
+            ← Back to Leads
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<div class="content-card form-card">
+
+
+    <div class="card-header">
+
+        <div>
+
+            <h2>
+                Lead Information
+            </h2>
+
+            <p>
+                Enter the contact and business details of the lead.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <form
+        method="POST"
+        class="crm-form"
+        action=""
+    >
+
+        {% csrf_token %}
+
+
+        <!-- =================================
+             BASIC INFORMATION
+             ================================= -->
+
+        <div class="form-section">
+
+            <div class="form-section-title">
+
+                <h3>
+                    Basic Information
+                </h3>
+
+                <p>
+                    Enter the lead's contact details.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <!-- NAME -->
+
+                <div class="form-group">
+
+                    <label for="name">
+
+                        Full Name
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ lead.name|default:'' }}"
+                        placeholder="Enter full name"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+
+                        Email Address
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ lead.email|default:'' }}"
+                        placeholder="example@email.com"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- PHONE -->
+
+                <div class="form-group">
+
+                    <label for="phone">
+
+                        Phone Number
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value="{{ lead.phone|default:'' }}"
+                        placeholder="Enter phone number"
+                        maxlength="15"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- COMPANY -->
+
+                <div class="form-group">
+
+                    <label for="company">
+                        Company
+                    </label>
+
+                    <input
+                        type="text"
+                        id="company"
+                        name="company"
+                        value="{{ lead.company|default:'' }}"
+                        placeholder="Enter company name"
+                    >
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             LEAD DETAILS
+             ================================= -->
+
+        <div class="form-section">
+
+            <div class="form-section-title">
+
+                <h3>
+                    Lead Details
+                </h3>
+
+                <p>
+                    Track the source and current status of the lead.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <!-- SOURCE -->
+
+                <div class="form-group">
+
+                    <label for="source">
+
+                        Lead Source
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <select
+                        id="source"
+                        name="source"
+                        required
+                    >
+
+                        <option value="">
+                            Select Lead Source
+                        </option>
+
+
+                        <option
+                            value="Website"
+                            {% if lead.source == "Website" or not lead %}
+                                selected
+                            {% endif %}
+                        >
+                            Website
+                        </option>
+
+
+                        <option
+                            value="LinkedIn"
+                            {% if lead.source == "LinkedIn" %}
+                                selected
+                            {% endif %}
+                        >
+                            LinkedIn
+                        </option>
+
+
+                        <option
+                            value="Referral"
+                            {% if lead.source == "Referral" %}
+                                selected
+                            {% endif %}
+                        >
+                            Referral
+                        </option>
+
+
+                        <option
+                            value="Advertisement"
+                            {% if lead.source == "Advertisement" %}
+                                selected
+                            {% endif %}
+                        >
+                            Advertisement
+                        </option>
+
+
+                        <option
+                            value="Other"
+                            {% if lead.source == "Other" %}
+                                selected
+                            {% endif %}
+                        >
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- STATUS -->
+
+                <div class="form-group">
+
+                    <label for="status">
+
+                        Lead Status
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <select
+                        id="status"
+                        name="status"
+                        required
+                    >
+
+                        <option
+                            value="New"
+                            {% if lead.status == "New" or not lead %}
+                                selected
+                            {% endif %}
+                        >
+                            New
+                        </option>
+
+
+                        <option
+                            value="Contacted"
+                            {% if lead.status == "Contacted" %}
+                                selected
+                            {% endif %}
+                        >
+                            Contacted
+                        </option>
+
+
+                        <option
+                            value="Qualified"
+                            {% if lead.status == "Qualified" %}
+                                selected
+                            {% endif %}
+                        >
+                            Qualified
+                        </option>
+
+
+                        <option
+                            value="Converted"
+                            {% if lead.status == "Converted" %}
+                                selected
+                            {% endif %}
+                        >
+                            Converted
+                        </option>
+
+
+                        <option
+                            value="Lost"
+                            {% if lead.status == "Lost" %}
+                                selected
+                            {% endif %}
+                        >
+                            Lost
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             NOTES
+             ================================= -->
+
+        <div class="form-section">
+
+            <div class="form-section-title">
+
+                <h3>
+                    Additional Notes
+                </h3>
+
+                <p>
+                    Add any useful information about this lead.
+                </p>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="notes">
+                    Notes
+                </label>
+
+                <textarea
+                    id="notes"
+                    name="notes"
+                    rows="6"
+                    placeholder="Enter notes about this lead..."
+                >{{ lead.notes|default:'' }}</textarea>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             FORM ACTIONS
+             ================================= -->
+
+        <div class="form-actions">
+
+
+            <a
+                href="{% url 'leads' %}"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+
+                {% if lead %}
+                    ✓ Update Lead
+                {% else %}
+                    + Save Lead
+                {% endif %}
+
+            </button>
+
+
+        </div>
+
+
+    </form>
+
+
+</div>
+
+
+{% endblock %}

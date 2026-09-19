@@ -1,0 +1,834 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Dashboard | Smart CRM
+{% endblock %}
+
+{% block page_title %}
+    Dashboard
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- =========================================
+     DASHBOARD HEADER
+     ========================================= -->
+
+<div class="dashboard-header">
+
+    <div>
+
+        <h1>
+            Welcome back, {{ user.username }} 👋
+        </h1>
+
+        <p>
+            Here's an overview of your business performance.
+        </p>
+
+    </div>
+
+
+    <div class="dashboard-actions">
+
+        <a
+            href="{% url 'add_customer' %}"
+            class="btn btn-primary"
+        >
+            + Add Customer
+        </a>
+
+        <a
+            href="{% url 'add_lead' %}"
+            class="btn btn-secondary"
+        >
+            + Add Lead
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     STAT CARDS
+     ========================================= -->
+
+<div class="stats-grid">
+
+
+    <!-- TOTAL CUSTOMERS -->
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                👥
+            </div>
+
+            <span class="stat-label">
+                Total Customers
+            </span>
+
+        </div>
+
+
+        <div class="stat-value">
+            {{ total_customers }}
+        </div>
+
+
+        <div class="stat-footer">
+
+            <span>
+                {{ active_customers }}
+            </span>
+
+            <span>
+                active customers
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ACTIVE LEADS -->
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                🎯
+            </div>
+
+            <span class="stat-label">
+                Active Leads
+            </span>
+
+        </div>
+
+
+        <div class="stat-value">
+            {{ active_leads }}
+        </div>
+
+
+        <div class="stat-footer">
+
+            <span>
+                {{ converted_leads }}
+            </span>
+
+            <span>
+                converted
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- TOTAL REVENUE -->
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                ₹
+            </div>
+
+            <span class="stat-label">
+                Won Revenue
+            </span>
+
+        </div>
+
+
+        <div class="stat-value">
+            ₹{{ total_revenue|floatformat:2 }}
+        </div>
+
+
+        <div class="stat-footer">
+
+            <span>
+                {{ won_deals }}
+            </span>
+
+            <span>
+                won deals
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- PENDING TASKS -->
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                ✓
+            </div>
+
+            <span class="stat-label">
+                Pending Tasks
+            </span>
+
+        </div>
+
+
+        <div class="stat-value">
+            {{ pending_tasks }}
+        </div>
+
+
+        <div class="stat-footer">
+
+            <span>
+                Upcoming
+            </span>
+
+            <span>
+                activities
+            </span>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================
+     SALES + LEAD SUMMARY
+     ========================================= -->
+
+<div class="dashboard-grid">
+
+
+    <!-- SALES OVERVIEW -->
+
+    <div class="content-card sales-overview-card">
+
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Sales Overview
+                </h2>
+
+                <p>
+                    Current sales performance
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'sales' %}"
+                class="view-link"
+            >
+                View Sales
+            </a>
+
+        </div>
+
+
+
+        <!-- REVENUE -->
+
+        <div class="revenue-summary">
+
+            <span>
+                Total Won Revenue
+            </span>
+
+            <strong>
+                ₹{{ total_revenue|floatformat:2 }}
+            </strong>
+
+            <small>
+                Based on won deals
+            </small>
+
+        </div>
+
+
+
+        <!-- SIMPLE CHART -->
+
+        <div class="sales-chart">
+
+
+            <div class="chart-y-axis">
+
+                <span>100%</span>
+                <span>75%</span>
+                <span>50%</span>
+                <span>25%</span>
+                <span>0%</span>
+
+            </div>
+
+
+            <div class="chart-area">
+
+
+                <div class="chart-grid-lines">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </div>
+
+
+                <div class="chart-bars">
+
+                    <div class="chart-column">
+
+                        <div
+                            class="chart-bar"
+                            style="height: 35%;"
+                        ></div>
+
+                        <span>Jan</span>
+
+                    </div>
+
+
+                    <div class="chart-column">
+
+                        <div
+                            class="chart-bar"
+                            style="height: 48%;"
+                        ></div>
+
+                        <span>Feb</span>
+
+                    </div>
+
+
+                    <div class="chart-column">
+
+                        <div
+                            class="chart-bar"
+                            style="height: 42%;"
+                        ></div>
+
+                        <span>Mar</span>
+
+                    </div>
+
+
+                    <div class="chart-column">
+
+                        <div
+                            class="chart-bar"
+                            style="height: 60%;"
+                        ></div>
+
+                        <span>Apr</span>
+
+                    </div>
+
+
+                    <div class="chart-column">
+
+                        <div
+                            class="chart-bar"
+                            style="height: 52%;"
+                        ></div>
+
+                        <span>May</span>
+
+                    </div>
+
+
+                    <div class="chart-column">
+
+                        <div
+                            class="chart-bar"
+                            style="height: 70%;"
+                        ></div>
+
+                        <span>Jun</span>
+
+                    </div>
+
+
+                    <div class="chart-column">
+
+                        <div
+                            class="chart-bar"
+                            style="height: 64%;"
+                        ></div>
+
+                        <span>Jul</span>
+
+                    </div>
+
+
+                    <div class="chart-column">
+
+                        <div
+                            class="chart-bar"
+                            style="height: 80%;"
+                        ></div>
+
+                        <span>Aug</span>
+
+                    </div>
+
+
+                    <div class="chart-column active">
+
+                        <div
+                            class="chart-bar"
+                            style="height: 90%;"
+                        ></div>
+
+                        <span>Sep</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- LEAD SUMMARY -->
+
+    <div class="content-card lead-summary-card">
+
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Lead Summary
+                </h2>
+
+                <p>
+                    Current lead pipeline
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'leads' %}"
+                class="view-link"
+            >
+                View All
+            </a>
+
+        </div>
+
+
+
+        <div class="lead-summary-list">
+
+
+            <!-- NEW -->
+
+            <div class="summary-row">
+
+                <div class="summary-info">
+
+                    <span class="summary-icon new">
+                        +
+                    </span>
+
+                    <span>
+                        New Leads
+                    </span>
+
+                </div>
+
+                <strong>
+                    {{ new_leads }}
+                </strong>
+
+            </div>
+
+
+
+            <!-- CONTACTED -->
+
+            <div class="summary-row">
+
+                <div class="summary-info">
+
+                    <span class="summary-icon contacted">
+                        ↗
+                    </span>
+
+                    <span>
+                        Contacted
+                    </span>
+
+                </div>
+
+                <strong>
+                    {{ contacted_leads }}
+                </strong>
+
+            </div>
+
+
+
+            <!-- QUALIFIED -->
+
+            <div class="summary-row">
+
+                <div class="summary-info">
+
+                    <span class="summary-icon qualified">
+                        ✓
+                    </span>
+
+                    <span>
+                        Qualified
+                    </span>
+
+                </div>
+
+                <strong>
+                    {{ qualified_leads }}
+                </strong>
+
+            </div>
+
+
+
+            <!-- CONVERTED -->
+
+            <div class="summary-row">
+
+                <div class="summary-info">
+
+                    <span class="summary-icon converted">
+                        ★
+                    </span>
+
+                    <span>
+                        Converted
+                    </span>
+
+                </div>
+
+                <strong>
+                    {{ converted_leads }}
+                </strong>
+
+            </div>
+
+
+
+            <!-- LOST -->
+
+            <div class="summary-row">
+
+                <div class="summary-info">
+
+                    <span class="summary-icon lost">
+                        ×
+                    </span>
+
+                    <span>
+                        Lost
+                    </span>
+
+                </div>
+
+                <strong>
+                    {{ lost_leads }}
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================
+     RECENT CUSTOMERS + UPCOMING TASKS
+     ========================================= -->
+
+<div class="dashboard-bottom-grid">
+
+
+    <!-- RECENT CUSTOMERS -->
+
+    <div class="content-card">
+
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Recent Customers
+                </h2>
+
+                <p>
+                    Latest customers added to CRM
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'customers' %}"
+                class="view-link"
+            >
+                View All
+            </a>
+
+        </div>
+
+
+
+        <div class="recent-customer-list">
+
+
+            {% for customer in recent_customers %}
+
+            <div class="recent-customer">
+
+
+                <div class="customer-avatar">
+
+                    {{ customer.name|slice:":2"|upper }}
+
+                </div>
+
+
+                <div class="customer-details">
+
+                    <strong>
+                        {{ customer.name }}
+                    </strong>
+
+                    <span>
+                        {% if customer.company %}
+                            {{ customer.company }}
+                        {% else %}
+                            No company provided
+                        {% endif %}
+                    </span>
+
+                </div>
+
+
+                {% if customer.status == "Active" %}
+
+                    <span class="status-badge active">
+                        Active
+                    </span>
+
+                {% elif customer.status == "Pending" %}
+
+                    <span class="status-badge pending">
+                        Pending
+                    </span>
+
+                {% else %}
+
+                    <span class="status-badge">
+                        {{ customer.status }}
+                    </span>
+
+                {% endif %}
+
+
+            </div>
+
+            {% empty %}
+
+            <div class="empty-state">
+
+                <p>
+                    No customers available yet.
+                </p>
+
+                <a
+                    href="{% url 'add_customer' %}"
+                    class="btn btn-primary"
+                >
+                    Add Customer
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- UPCOMING TASKS -->
+
+    <div class="content-card">
+
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Upcoming Tasks
+                </h2>
+
+                <p>
+                    Your next scheduled activities
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'tasks' %}"
+                class="view-link"
+            >
+                View All
+            </a>
+
+        </div>
+
+
+
+        <div class="upcoming-task-list">
+
+
+            {% for task in upcoming_tasks %}
+
+            <div class="upcoming-task">
+
+
+                <div class="task-date">
+
+                    <strong>
+                        {{ task.due_date|date:"d" }}
+                    </strong>
+
+                    <span>
+                        {{ task.due_date|date:"M"|upper }}
+                    </span>
+
+                </div>
+
+
+
+                <div class="task-info">
+
+                    <strong>
+                        {{ task.title }}
+                    </strong>
+
+                    <span>
+
+                        {{ task.customer.name }}
+
+                        {% if task.due_time %}
+                            • {{ task.due_time|time:"h:i A" }}
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+
+                {% if task.priority == "High" %}
+
+                    <span class="priority-badge high">
+                        High
+                    </span>
+
+                {% elif task.priority == "Medium" %}
+
+                    <span class="priority-badge medium">
+                        Medium
+                    </span>
+
+                {% else %}
+
+                    <span class="priority-badge low">
+                        Low
+                    </span>
+
+                {% endif %}
+
+
+            </div>
+
+            {% empty %}
+
+            <div class="empty-state">
+
+                <p>
+                    No upcoming tasks.
+                </p>
+
+                <a
+                    href="{% url 'add_task' %}"
+                    class="btn btn-primary"
+                >
+                    Add Task
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

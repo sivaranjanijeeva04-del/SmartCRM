@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Profile Settings | Smart CRM
+{% endblock %}
+
+{% block page_title %}
+    Profile Settings
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Profile Settings</h1>
+
+        <p>
+            Manage your account information and profile details.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="profile-layout">
+
+
+    <!-- PROFILE CARD -->
+
+    <div class="content-card profile-card">
+
+        <div class="profile-card-header">
+
+            <div class="large-avatar">
+                {{ user.username|slice:":1"|upper }}
+            </div>
+
+            <div>
+
+                <h2>
+                    {{ user.username }}
+                </h2>
+
+                <p>
+                    CRM User
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="profile-divider"></div>
+
+
+        <div class="profile-details">
+
+            <div class="profile-detail-item">
+
+                <span class="detail-label">
+                    Username
+                </span>
+
+                <strong>
+                    {{ user.username }}
+                </strong>
+
+            </div>
+
+
+            <div class="profile-detail-item">
+
+                <span class="detail-label">
+                    Email
+                </span>
+
+                <strong>
+                    {{ user.email|default:"Not provided" }}
+                </strong>
+
+            </div>
+
+
+            <div class="profile-detail-item">
+
+                <span class="detail-label">
+                    Account Status
+                </span>
+
+                <span class="status-badge active">
+                    Active
+                </span>
+
+            </div>
+
+
+            <div class="profile-detail-item">
+
+                <span class="detail-label">
+                    Member Since
+                </span>
+
+                <strong>
+                    {{ user.date_joined|date:"d M Y" }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- EDIT PROFILE -->
+
+    <div class="content-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Edit Profile
+                </h2>
+
+                <p>
+                    Update your username and email address.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value="{{ user.username }}"
+                    placeholder="Enter username"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ user.email }}"
+                    placeholder="Enter email address"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

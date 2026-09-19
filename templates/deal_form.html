@@ -1,0 +1,530 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+
+    {% if deal %}
+        Edit Deal | Smart CRM
+    {% else %}
+        Add Deal | Smart CRM
+    {% endif %}
+
+{% endblock %}
+
+
+{% block page_title %}
+
+    {% if deal %}
+        Edit Deal
+    {% else %}
+        Add Deal
+    {% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- =========================================
+     PAGE HEADER
+     ========================================= -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+
+            {% if deal %}
+                Edit Deal
+            {% else %}
+                Add New Deal
+            {% endif %}
+
+        </h1>
+
+        <p>
+
+            {% if deal %}
+                Update the deal information and sales progress.
+            {% else %}
+                Create a new sales opportunity for your customer.
+            {% endif %}
+
+        </p>
+
+    </div>
+
+
+    <div>
+
+        <a
+            href="{% url 'sales' %}"
+            class="btn btn-secondary"
+        >
+            ← Back to Sales
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     FORM CARD
+     ========================================= -->
+
+<div class="content-card form-card">
+
+
+    <div class="card-header">
+
+        <div>
+
+            <h2>
+                Deal Information
+            </h2>
+
+            <p>
+                Enter the details of the sales opportunity.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================
+         FORM
+         ===================================== -->
+
+    <form
+        method="POST"
+        class="crm-form"
+    >
+
+        {% csrf_token %}
+
+
+
+        <!-- =================================
+             DEAL INFORMATION
+             ================================= -->
+
+        <div class="form-section">
+
+            <div class="form-section-title">
+
+                <h3>
+                    Deal Details
+                </h3>
+
+                <p>
+                    Basic information about the sales deal.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <!-- DEAL NAME -->
+
+                <div class="form-group">
+
+                    <label for="deal_name">
+
+                        Deal Name
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="deal_name"
+                        name="deal_name"
+                        value="{{ deal.deal_name|default:'' }}"
+                        placeholder="Example: Website Development Project"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- AMOUNT -->
+
+                <div class="form-group">
+
+                    <label for="amount">
+
+                        Deal Amount
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="amount"
+                        name="amount"
+                        value="{{ deal.amount|default:'' }}"
+                        placeholder="Enter deal amount"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- CUSTOMER -->
+
+                <div class="form-group">
+
+                    <label for="customer">
+
+                        Customer
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <select
+                        id="customer"
+                        name="customer"
+                        required
+                    >
+
+                        <option value="">
+                            Select Customer
+                        </option>
+
+
+                        {% for customer in customers %}
+
+                        <option
+                            value="{{ customer.id }}"
+                            {% if deal.customer_id == customer.id %}
+                                selected
+                            {% endif %}
+                        >
+
+                            {{ customer.name }}
+
+                            {% if customer.company %}
+                                — {{ customer.company }}
+                            {% endif %}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- LEAD -->
+
+                <div class="form-group">
+
+                    <label for="lead">
+
+                        Related Lead
+
+                    </label>
+
+                    <select
+                        id="lead"
+                        name="lead"
+                    >
+
+                        <option value="">
+                            No Lead / Optional
+                        </option>
+
+
+                        {% for lead in leads %}
+
+                        <option
+                            value="{{ lead.id }}"
+                            {% if deal.lead_id == lead.id %}
+                                selected
+                            {% endif %}
+                        >
+
+                            {{ lead.name }}
+
+                            {% if lead.company %}
+                                — {{ lead.company }}
+                            {% endif %}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             SALES PROGRESS
+             ================================= -->
+
+        <div class="form-section">
+
+            <div class="form-section-title">
+
+                <h3>
+                    Sales Progress
+                </h3>
+
+                <p>
+                    Track the current stage and status of the deal.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <!-- STAGE -->
+
+                <div class="form-group">
+
+                    <label for="stage">
+
+                        Sales Stage
+
+                    </label>
+
+                    <select
+                        id="stage"
+                        name="stage"
+                    >
+
+                        <option
+                            value="New"
+                            {% if deal.stage == "New" or not deal %}
+                                selected
+                            {% endif %}
+                        >
+                            New
+                        </option>
+
+
+                        <option
+                            value="Proposal"
+                            {% if deal.stage == "Proposal" %}
+                                selected
+                            {% endif %}
+                        >
+                            Proposal
+                        </option>
+
+
+                        <option
+                            value="Negotiation"
+                            {% if deal.stage == "Negotiation" %}
+                                selected
+                            {% endif %}
+                        >
+                            Negotiation
+                        </option>
+
+
+                        <option
+                            value="Won"
+                            {% if deal.stage == "Won" %}
+                                selected
+                            {% endif %}
+                        >
+                            Won
+                        </option>
+
+
+                        <option
+                            value="Lost"
+                            {% if deal.stage == "Lost" %}
+                                selected
+                            {% endif %}
+                        >
+                            Lost
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- STATUS -->
+
+                <div class="form-group">
+
+                    <label for="status">
+
+                        Deal Status
+
+                    </label>
+
+                    <select
+                        id="status"
+                        name="status"
+                    >
+
+                        <option
+                            value="Open"
+                            {% if deal.status == "Open" or not deal %}
+                                selected
+                            {% endif %}
+                        >
+                            Open
+                        </option>
+
+
+                        <option
+                            value="Won"
+                            {% if deal.status == "Won" %}
+                                selected
+                            {% endif %}
+                        >
+                            Won
+                        </option>
+
+
+                        <option
+                            value="Lost"
+                            {% if deal.status == "Lost" %}
+                                selected
+                            {% endif %}
+                        >
+                            Lost
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- EXPECTED CLOSE DATE -->
+
+                <div class="form-group">
+
+                    <label for="expected_close_date">
+
+                        Expected Close Date
+
+                    </label>
+
+                    <input
+                        type="date"
+                        id="expected_close_date"
+                        name="expected_close_date"
+                        value="{{ deal.expected_close_date|date:'Y-m-d' }}"
+                    >
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             NOTES
+             ================================= -->
+
+        <div class="form-section">
+
+            <div class="form-section-title">
+
+                <h3>
+                    Additional Notes
+                </h3>
+
+                <p>
+                    Add any additional information related to this deal.
+                </p>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="notes">
+                    Notes
+                </label>
+
+                <textarea
+                    id="notes"
+                    name="notes"
+                    rows="6"
+                    placeholder="Enter deal notes..."
+                >{{ deal.notes|default:'' }}</textarea>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             FORM ACTIONS
+             ================================= -->
+
+        <div class="form-actions">
+
+
+            <a
+                href="{% url 'sales' %}"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+
+                {% if deal %}
+
+                    ✓ Update Deal
+
+                {% else %}
+
+                    + Save Deal
+
+                {% endif %}
+
+            </button>
+
+
+        </div>
+
+
+    </form>
+
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Add Customer | Smart CRM
+{% endblock %}
+
+{% block page_title %}
+Customer Management
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+            {% if customer %}
+                Edit Customer
+            {% else %}
+                Add Customer
+            {% endif %}
+        </h1>
+
+        <p>
+            {% if customer %}
+                Update the customer's business information.
+            {% else %}
+                Add a new customer to your CRM database.
+            {% endif %}
+        </p>
+
+    </div>
+
+    <a
+        href="{% url 'customers' %}"
+        class="btn btn-secondary"
+    >
+        ← Back to Customers
+    </a>
+
+</div>
+
+
+<div class="content-card form-card">
+
+    <div class="card-header">
+
+        <div>
+
+            <h2>
+                Customer Information
+            </h2>
+
+            <p>
+                Enter the customer's contact and business details.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <div class="form-grid">
+
+
+            <!-- NAME -->
+
+            <div class="form-group">
+
+                <label for="name">
+                    Customer Name
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="{% if customer %}{{ customer.name }}{% endif %}"
+                    placeholder="Enter customer name"
+                    required
+                >
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{% if customer %}{{ customer.email }}{% endif %}"
+                    placeholder="customer@example.com"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group">
+
+                <label for="phone">
+                    Phone Number
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value="{% if customer %}{{ customer.phone }}{% endif %}"
+                    placeholder="Enter phone number"
+                    maxlength="15"
+                    required
+                >
+
+            </div>
+
+
+            <!-- COMPANY -->
+
+            <div class="form-group">
+
+                <label for="company">
+                    Company
+                </label>
+
+                <input
+                    type="text"
+                    id="company"
+                    name="company"
+                    value="{% if customer %}{{ customer.company }}{% endif %}"
+                    placeholder="Enter company name"
+                >
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="form-group">
+
+                <label for="status">
+                    Status
+                </label>
+
+                <select
+                    id="status"
+                    name="status"
+                >
+
+                    <option
+                        value="Active"
+                        {% if customer.status == "Active" or not customer %}
+                            selected
+                        {% endif %}
+                    >
+                        Active
+                    </option>
+
+                    <option
+                        value="Pending"
+                        {% if customer.status == "Pending" %}
+                            selected
+                        {% endif %}
+                    >
+                        Pending
+                    </option>
+
+                    <option
+                        value="Inactive"
+                        {% if customer.status == "Inactive" %}
+                            selected
+                        {% endif %}
+                    >
+                        Inactive
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- ADDRESS -->
+
+            <div class="form-group full-width">
+
+                <label for="address">
+                    Address
+                </label>
+
+                <textarea
+                    id="address"
+                    name="address"
+                    rows="4"
+                    placeholder="Enter customer address"
+                >{% if customer %}{{ customer.address }}{% endif %}</textarea>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- FORM ACTIONS -->
+
+        <div class="form-actions">
+
+            <a
+                href="{% url 'customers' %}"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+
+                {% if customer %}
+                    Update Customer
+                {% else %}
+                    Save Customer
+                {% endif %}
+
+            </button>
+
+        </div>
+
+
+    </form>
+
+</div>
+
+
+{% endblock %}
