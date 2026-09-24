@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{% if customer %}Edit Customer{% else %}Add Customer{% endif %} | Smart CRM
+{% if customer %}
+    Edit Customer | Smart CRM
+{% else %}
+    Add Customer | Smart CRM
+{% endif %}
 {% endblock %}
+
 
 {% block page_title %}
-{% if customer %}Edit Customer{% else %}Add Customer{% endif %}
-{% endblock %}
-
-{% block breadcrumb %}
-Customers / {% if customer %}Edit{% else %}Add{% endif %}
+Customer Management
 {% endblock %}
 
 
@@ -17,57 +18,95 @@ Customers / {% if customer %}Edit{% else %}Add{% endif %}
 
 <div class="form-page">
 
+    <!-- ========================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================= -->
+
     <div class="form-page-header">
 
         <div>
-            <h3>
+
+            <h1>
+
                 {% if customer %}
                     Edit Customer
                 {% else %}
-                    Add New Customer
+                    Add Customer
                 {% endif %}
-            </h3>
+
+            </h1>
 
             <p>
+
                 {% if customer %}
-                    Update customer information.
+                    Update the customer's business information.
                 {% else %}
-                    Enter customer details to add them to your CRM.
+                    Add a new customer to your CRM database.
                 {% endif %}
+
             </p>
+
         </div>
 
-        <a href="{% url 'customers' %}" class="secondary-btn">
+
+        <a
+            href="{% url 'customers' %}"
+            class="secondary-btn"
+        >
             ← Back to Customers
         </a>
 
     </div>
 
 
+    <!-- ========================= -->
+    <!-- FORM PANEL -->
+    <!-- ========================= -->
+
     <div class="form-panel">
 
-        <form method="POST">
+        <div class="section-title">
+
+            <h2>
+                Customer Information
+            </h2>
+
+            <p>
+                Enter the customer's contact and business details.
+            </p>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- CUSTOMER FORM -->
+        <!-- ========================= -->
+
+        <form
+            method="POST"
+            action="{% if customer %}{% url 'edit_customer' customer.id %}{% else %}{% url 'add_customer' %}{% endif %}"
+        >
 
             {% csrf_token %}
 
 
-            <div class="section-title">
-                Customer Information
-            </div>
-
-
             <div class="form-grid">
+
+
+                <!-- CUSTOMER NAME -->
 
                 <div class="input-group">
 
-                    <label>
-                        Full Name *
+                    <label for="name">
+                        Customer Name
+                        <span class="required">*</span>
                     </label>
 
                     <input
                         type="text"
+                        id="name"
                         name="name"
-                        value="{{ customer.name|default:'' }}"
+                        value="{% if customer %}{{ customer.name }}{% endif %}"
                         placeholder="Enter customer name"
                         required
                     >
@@ -75,16 +114,20 @@ Customers / {% if customer %}Edit{% else %}Add{% endif %}
                 </div>
 
 
+                <!-- EMAIL -->
+
                 <div class="input-group">
 
-                    <label>
-                        Email Address *
+                    <label for="email">
+                        Email Address
+                        <span class="required">*</span>
                     </label>
 
                     <input
                         type="email"
+                        id="email"
                         name="email"
-                        value="{{ customer.email|default:'' }}"
+                        value="{% if customer %}{{ customer.email }}{% endif %}"
                         placeholder="customer@example.com"
                         required
                     >
@@ -92,89 +135,118 @@ Customers / {% if customer %}Edit{% else %}Add{% endif %}
                 </div>
 
 
+                <!-- PHONE -->
+
                 <div class="input-group">
 
-                    <label>
-                        Phone Number *
+                    <label for="phone">
+                        Phone Number
+                        <span class="required">*</span>
                     </label>
 
                     <input
-                        type="text"
+                        type="tel"
+                        id="phone"
                         name="phone"
-                        value="{{ customer.phone|default:'' }}"
+                        value="{% if customer %}{{ customer.phone }}{% endif %}"
                         placeholder="Enter phone number"
+                        maxlength="15"
                         required
                     >
 
                 </div>
 
 
+                <!-- COMPANY -->
+
                 <div class="input-group">
 
-                    <label>
+                    <label for="company">
                         Company
                     </label>
 
                     <input
                         type="text"
+                        id="company"
                         name="company"
-                        value="{{ customer.company|default:'' }}"
+                        value="{% if customer %}{{ customer.company }}{% endif %}"
                         placeholder="Enter company name"
                     >
 
                 </div>
 
+
+                <!-- STATUS -->
+
+                <div class="input-group status-field">
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select
+                        id="status"
+                        name="status"
+                    >
+
+                        <option
+                            value="Active"
+                            {% if not customer or customer.status == "Active" %}
+                                selected
+                            {% endif %}
+                        >
+                            Active
+                        </option>
+
+
+                        <option
+                            value="Pending"
+                            {% if customer and customer.status == "Pending" %}
+                                selected
+                            {% endif %}
+                        >
+                            Pending
+                        </option>
+
+
+                        <option
+                            value="Inactive"
+                            {% if customer and customer.status == "Inactive" %}
+                                selected
+                            {% endif %}
+                        >
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- ADDRESS -->
+
+                <div class="input-group full-width">
+
+                    <label for="address">
+                        Address
+                    </label>
+
+                    <textarea
+                        id="address"
+                        name="address"
+                        rows="5"
+                        placeholder="Enter customer address"
+                    >{% if customer %}{{ customer.address }}{% endif %}</textarea>
+
+                </div>
+
+
             </div>
 
 
-            <div class="input-group full-width">
-
-                <label>
-                    Address
-                </label>
-
-                <textarea
-                    name="address"
-                    rows="4"
-                    placeholder="Enter customer address"
-                >{{ customer.address|default:'' }}</textarea>
-
-            </div>
-
-
-            <div class="input-group status-field">
-
-                <label>
-                    Status
-                </label>
-
-                <select name="status">
-
-                    <option
-                        value="Active"
-                        {% if customer.status == "Active" %}selected{% endif %}
-                    >
-                        Active
-                    </option>
-
-                    <option
-                        value="Pending"
-                        {% if customer.status == "Pending" %}selected{% endif %}
-                    >
-                        Pending
-                    </option>
-
-                    <option
-                        value="Inactive"
-                        {% if customer.status == "Inactive" %}selected{% endif %}
-                    >
-                        Inactive
-                    </option>
-
-                </select>
-
-            </div>
-
+            <!-- ========================= -->
+            <!-- FORM BUTTONS -->
+            <!-- ========================= -->
 
             <div class="form-footer">
 
@@ -184,6 +256,7 @@ Customers / {% if customer %}Edit{% else %}Add{% endif %}
                 >
                     Cancel
                 </a>
+
 
                 <button
                     type="submit"
@@ -200,6 +273,7 @@ Customers / {% if customer %}Edit{% else %}Add{% endif %}
 
             </div>
 
+
         </form>
 
     </div>
@@ -207,152 +281,335 @@ Customers / {% if customer %}Edit{% else %}Add{% endif %}
 </div>
 
 
+<!-- ========================= -->
+<!-- FORM STYLES -->
+<!-- ========================= -->
+
 <style>
 
-.form-page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
+.form-page {
+
+    width: 100%;
+
 }
 
-.form-page-header h3 {
-    font-size: 19px;
-    margin-bottom: 5px;
+
+.form-page-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+
 }
+
+
+.form-page-header h1 {
+
+    margin: 0 0 6px;
+
+    font-size: 28px;
+
+    color: #111827;
+
+}
+
 
 .form-page-header p {
-    font-size: 13px;
-    color: #6b7280;
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+
 }
 
+
+/* FORM PANEL */
 
 .form-panel {
+
     background: white;
+
     border: 1px solid #e5e7eb;
-    border-radius: 10px;
+
+    border-radius: 12px;
+
     padding: 30px;
+
     max-width: 900px;
+
 }
 
+
+/* SECTION */
 
 .section-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #111827;
-    padding-bottom: 16px;
-    margin-bottom: 22px;
+
     border-bottom: 1px solid #eef0f3;
+
+    padding-bottom: 18px;
+
+    margin-bottom: 25px;
+
 }
 
+
+.section-title h2 {
+
+    margin: 0 0 6px;
+
+    font-size: 20px;
+
+    color: #111827;
+
+}
+
+
+.section-title p {
+
+    margin: 0;
+
+    font-size: 13px;
+
+    color: #64748b;
+
+}
+
+
+/* GRID */
 
 .form-grid {
+
     display: grid;
+
     grid-template-columns: 1fr 1fr;
+
     gap: 20px;
+
 }
 
 
+/* INPUT GROUP */
+
 .input-group {
-    margin-bottom: 20px;
+
+    margin-bottom: 4px;
+
 }
 
 
 .input-group label {
+
     display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: #374151;
+
     margin-bottom: 8px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #374151;
+
+}
+
+
+.required {
+
+    color: #dc2626;
+
 }
 
 
 .input-group input,
-.input-group textarea,
-.input-group select {
-    width: 100%;
-    border: 1px solid #d9dde5;
-    border-radius: 7px;
-    padding: 11px 13px;
-    font-size: 13px;
-    outline: none;
-    background: white;
-    color: #111827;
-}
-
-
+.input-group select,
 .input-group textarea {
-    resize: vertical;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    padding: 12px 14px;
+
+    font-size: 13px;
+
+    color: #111827;
+
+    background: white;
+
+    outline: none;
+
 }
 
 
 .input-group input:focus,
-.input-group textarea:focus,
-.input-group select:focus {
+.input-group select:focus,
+.input-group textarea:focus {
+
     border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79,70,229,.08);
+
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.08);
+
+}
+
+
+.input-group textarea {
+
+    resize: vertical;
+
+    min-height: 110px;
+
 }
 
 
 .full-width {
-    margin-top: 2px;
+
+    grid-column: 1 / -1;
+
 }
 
 
 .status-field {
-    max-width: 300px;
+
+    max-width: 280px;
+
 }
 
 
+/* FOOTER */
+
 .form-footer {
-    border-top: 1px solid #eef0f3;
-    margin-top: 10px;
-    padding-top: 22px;
+
     display: flex;
+
     justify-content: flex-end;
+
     gap: 10px;
+
+    margin-top: 28px;
+
+    padding-top: 22px;
+
+    border-top: 1px solid #eef0f3;
+
+}
+
+
+/* BUTTONS */
+
+.primary-btn,
+.secondary-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 11px 18px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+}
+
+
+.primary-btn {
+
+    background: #4f46e5;
+
+    color: white;
+
+    border: 1px solid #4f46e5;
+
+}
+
+
+.primary-btn:hover {
+
+    background: #4338ca;
+
 }
 
 
 .secondary-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 16px;
-    border: 1px solid #d9dde5;
+
     background: white;
-    color: #4b5563;
-    border-radius: 7px;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 600;
+
+    color: #374151;
+
+    border: 1px solid #d1d5db;
+
 }
 
 
 .secondary-btn:hover {
+
     background: #f9fafb;
+
 }
 
 
-@media(max-width:650px) {
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
 
     .form-page-header {
+
         flex-direction: column;
+
         align-items: flex-start;
+
         gap: 15px;
+
     }
+
 
     .form-grid {
+
         grid-template-columns: 1fr;
-        gap: 0;
+
     }
 
+
+    .full-width {
+
+        grid-column: auto;
+
+    }
+
+
+    .status-field {
+
+        max-width: none;
+
+    }
+
+
     .form-panel {
+
         padding: 20px;
+
     }
 
 }
 
 </style>
+
 
 {% endblock %}

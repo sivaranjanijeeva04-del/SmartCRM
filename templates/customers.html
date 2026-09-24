@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Add Customer | Smart CRM
+Customers | Smart CRM
 {% endblock %}
 
 {% block page_title %}
@@ -13,140 +13,84 @@ Customer Management
 <div class="page-header">
 
     <div>
-
-        <h1>
-            {% if customer %}
-                Edit Customer
-            {% else %}
-                Add Customer
-            {% endif %}
-        </h1>
+        <h1>Customers</h1>
 
         <p>
-            {% if customer %}
-                Update the customer's business information.
-            {% else %}
-                Add a new customer to your CRM database.
-            {% endif %}
+            Manage and track your business customers.
         </p>
-
     </div>
 
-    <a
-        href="{% url 'customers' %}"
-        class="btn btn-secondary"
-    >
-        ← Back to Customers
+    <!-- ADD CUSTOMER -->
+    <a href="{% url 'add_customer' %}" class="btn btn-primary">
+        + Add Customer
     </a>
 
 </div>
 
 
-<div class="content-card form-card">
+<!-- ========================= -->
+<!-- CUSTOMER SUMMARY -->
+<!-- ========================= -->
 
-    <div class="card-header">
+<div class="summary-grid">
+
+    <div class="summary-card">
+
+        <div class="summary-icon">
+            👥
+        </div>
 
         <div>
+            <p>Total Customers</p>
 
             <h2>
-                Customer Information
+                {{ customers|length }}
             </h2>
-
-            <p>
-                Enter the customer's contact and business details.
-            </p>
-
         </div>
 
     </div>
 
 
-    <form method="POST">
+    <div class="summary-card">
 
-        {% csrf_token %}
+        <div class="summary-icon">
+            🟢
+        </div>
 
+        <div>
+            <p>Active Customers</p>
 
-        <div class="form-grid">
+            <h2>
+                {{ customers|length }}
+            </h2>
+        </div>
 
+    </div>
 
-            <!-- NAME -->
-
-            <div class="form-group">
-
-                <label for="name">
-                    Customer Name
-                    <span class="required">*</span>
-                </label>
-
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value="{% if customer %}{{ customer.name }}{% endif %}"
-                    placeholder="Enter customer name"
-                    required
-                >
-
-            </div>
+</div>
 
 
-            <!-- EMAIL -->
+<!-- ========================= -->
+<!-- SEARCH & FILTER -->
+<!-- ========================= -->
 
-            <div class="form-group">
+<div class="content-card">
 
-                <label for="email">
-                    Email Address
-                    <span class="required">*</span>
-                </label>
+    <div class="filter-section">
 
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="{% if customer %}{{ customer.email }}{% endif %}"
-                    placeholder="customer@example.com"
-                    required
-                >
+        <form method="GET" class="filter-form">
 
-            </div>
+            <!-- SEARCH -->
 
+            <div class="search-box">
 
-            <!-- PHONE -->
-
-            <div class="form-group">
-
-                <label for="phone">
-                    Phone Number
-                    <span class="required">*</span>
-                </label>
-
-                <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value="{% if customer %}{{ customer.phone }}{% endif %}"
-                    placeholder="Enter phone number"
-                    maxlength="15"
-                    required
-                >
-
-            </div>
-
-
-            <!-- COMPANY -->
-
-            <div class="form-group">
-
-                <label for="company">
-                    Company
-                </label>
+                <span>🔍</span>
 
                 <input
                     type="text"
-                    id="company"
-                    name="company"
-                    value="{% if customer %}{{ customer.company }}{% endif %}"
-                    placeholder="Enter company name"
+                    name="search"
+                    value="{{ search }}"
+                    placeholder="Search customers..."
                 >
 
             </div>
@@ -154,101 +98,892 @@ Customer Management
 
             <!-- STATUS -->
 
-            <div class="form-group">
+            <select name="status">
 
-                <label for="status">
-                    Status
-                </label>
+                <option value="">
+                    All Status
+                </option>
 
-                <select
-                    id="status"
-                    name="status"
+                <option
+                    value="Active"
+                    {% if selected_status == "Active" %}
+                        selected
+                    {% endif %}
                 >
+                    Active
+                </option>
 
-                    <option
-                        value="Active"
-                        {% if customer.status == "Active" or not customer %}
-                            selected
-                        {% endif %}
-                    >
-                        Active
-                    </option>
+                <option
+                    value="Pending"
+                    {% if selected_status == "Pending" %}
+                        selected
+                    {% endif %}
+                >
+                    Pending
+                </option>
 
-                    <option
-                        value="Pending"
-                        {% if customer.status == "Pending" %}
-                            selected
-                        {% endif %}
-                    >
-                        Pending
-                    </option>
+                <option
+                    value="Inactive"
+                    {% if selected_status == "Inactive" %}
+                        selected
+                    {% endif %}
+                >
+                    Inactive
+                </option>
 
-                    <option
-                        value="Inactive"
-                        {% if customer.status == "Inactive" %}
-                            selected
-                        {% endif %}
-                    >
-                        Inactive
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- ADDRESS -->
-
-            <div class="form-group full-width">
-
-                <label for="address">
-                    Address
-                </label>
-
-                <textarea
-                    id="address"
-                    name="address"
-                    rows="4"
-                    placeholder="Enter customer address"
-                >{% if customer %}{{ customer.address }}{% endif %}</textarea>
-
-            </div>
-
-
-        </div>
-
-
-        <!-- FORM ACTIONS -->
-
-        <div class="form-actions">
-
-            <a
-                href="{% url 'customers' %}"
-                class="btn btn-secondary"
-            >
-                Cancel
-            </a>
+            </select>
 
 
             <button
                 type="submit"
                 class="btn btn-primary"
             >
-
-                {% if customer %}
-                    Update Customer
-                {% else %}
-                    Save Customer
-                {% endif %}
-
+                Search
             </button>
+
+
+            <a
+                href="{% url 'customers' %}"
+                class="btn btn-secondary"
+            >
+                Clear
+            </a>
+
+        </form>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- CUSTOMER TABLE -->
+    <!-- ========================= -->
+
+    <div class="table-header">
+
+        <h2>
+            Customer List
+        </h2>
+
+        <span>
+            {{ customers|length }} customer{{ customers|length|pluralize }}
+        </span>
+
+    </div>
+
+
+    {% if customers %}
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        CUSTOMER
+                    </th>
+
+                    <th>
+                        CONTACT
+                    </th>
+
+                    <th>
+                        COMPANY
+                    </th>
+
+                    <th>
+                        STATUS
+                    </th>
+
+                    <th>
+                        CREATED
+                    </th>
+
+                    <th>
+                        ACTION
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for customer in customers %}
+
+                <tr>
+
+                    <!-- CUSTOMER -->
+
+                    <td>
+
+                        <div class="customer-info">
+
+                            <div class="customer-avatar">
+                                {{ customer.name|first|upper }}
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    {{ customer.name }}
+                                </strong>
+
+                                <small>
+                                    ID #{{ customer.id }}
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- CONTACT -->
+
+                    <td>
+
+                        <div class="contact-info">
+
+                            <span>
+                                {{ customer.email }}
+                            </span>
+
+                            <span>
+                                {{ customer.phone }}
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- COMPANY -->
+
+                    <td>
+
+                        {% if customer.company %}
+                            {{ customer.company }}
+                        {% else %}
+                            <span class="muted">
+                                —
+                            </span>
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if customer.status == "Active" %}
+
+                            <span class="status active">
+                                Active
+                            </span>
+
+                        {% elif customer.status == "Pending" %}
+
+                            <span class="status pending">
+                                Pending
+                            </span>
+
+                        {% else %}
+
+                            <span class="status inactive">
+                                Inactive
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- CREATED -->
+
+                    <td>
+
+                        {{ customer.created_at|date:"d M Y" }}
+
+                    </td>
+
+
+                    <!-- ACTION -->
+
+                    <td>
+
+                        <div class="actions">
+
+                            <!-- EDIT -->
+
+                            <a
+                                href="{% url 'edit_customer' customer.id %}"
+                                class="action-btn edit"
+                            >
+                                Edit
+                            </a>
+
+
+                            <!-- DELETE -->
+
+                            <form
+                                method="POST"
+                                action="{% url 'delete_customer' customer.id %}"
+                                onsubmit="return confirm('Are you sure you want to delete this customer?');"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="action-btn delete"
+                                >
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+        <!-- EMPTY STATE -->
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                👥
+            </div>
+
+            <h3>
+                No Customers Found
+            </h3>
+
+            <p>
+                {% if search or selected_status %}
+                    No customers match your search or filter.
+                {% else %}
+                    You haven't added any customers yet.
+                {% endif %}
+            </p>
+
+            <a
+                href="{% url 'add_customer' %}"
+                class="btn btn-primary"
+            >
+                + Add Customer
+            </a>
 
         </div>
 
-
-    </form>
+    {% endif %}
 
 </div>
 
+
+<!-- ========================= -->
+<!-- PAGE STYLES -->
+<!-- ========================= -->
+
+<style>
+
+.page-header {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 25px;
+
+}
+
+
+.page-header h1 {
+
+    margin: 0 0 6px 0;
+
+    font-size: 28px;
+    color: #111827;
+
+}
+
+
+.page-header p {
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+
+}
+
+
+.btn {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 11px 18px;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    border: none;
+
+    cursor: pointer;
+
+}
+
+
+.btn-primary {
+
+    background: #4f46e5;
+
+    color: white;
+
+}
+
+
+.btn-primary:hover {
+
+    background: #4338ca;
+
+}
+
+
+.btn-secondary {
+
+    background: white;
+
+    color: #374151;
+
+    border: 1px solid #d1d5db;
+
+}
+
+
+.btn-secondary:hover {
+
+    background: #f9fafb;
+
+}
+
+
+/* SUMMARY */
+
+.summary-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.summary-card {
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    padding: 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+}
+
+
+.summary-icon {
+
+    width: 52px;
+    height: 52px;
+
+    border-radius: 12px;
+
+    background: #eef2ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 24px;
+
+}
+
+
+.summary-card p {
+
+    margin: 0 0 5px;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+}
+
+
+.summary-card h2 {
+
+    margin: 0;
+
+    font-size: 26px;
+
+    color: #111827;
+
+}
+
+
+/* CONTENT CARD */
+
+.content-card {
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    padding: 25px;
+
+}
+
+
+/* FILTER */
+
+.filter-section {
+
+    padding-bottom: 20px;
+
+    border-bottom: 1px solid #eef0f3;
+
+}
+
+
+.filter-form {
+
+    display: flex;
+
+    gap: 12px;
+
+    align-items: center;
+
+}
+
+
+.search-box {
+
+    flex: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    padding: 0 12px;
+
+    background: white;
+
+}
+
+
+.search-box input {
+
+    border: none;
+
+    outline: none;
+
+    width: 100%;
+
+    padding: 11px 5px;
+
+    font-size: 13px;
+
+}
+
+
+.filter-form select {
+
+    padding: 11px 14px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    background: white;
+
+    font-size: 13px;
+
+}
+
+
+/* TABLE HEADER */
+
+.table-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 22px 0 15px;
+
+}
+
+
+.table-header h2 {
+
+    margin: 0;
+
+    font-size: 18px;
+
+}
+
+
+.table-header span {
+
+    color: #64748b;
+
+    font-size: 13px;
+
+}
+
+
+/* TABLE */
+
+.table-container {
+
+    overflow-x: auto;
+
+}
+
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+}
+
+
+thead {
+
+    background: #f8fafc;
+
+}
+
+
+th {
+
+    text-align: left;
+
+    padding: 14px;
+
+    font-size: 11px;
+
+    color: #64748b;
+
+    letter-spacing: .5px;
+
+}
+
+
+td {
+
+    padding: 15px 14px;
+
+    border-top: 1px solid #eef0f3;
+
+    font-size: 13px;
+
+    color: #374151;
+
+}
+
+
+/* CUSTOMER */
+
+.customer-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+.customer-avatar {
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+
+    background: #eef2ff;
+
+    color: #4f46e5;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 700;
+
+}
+
+
+.customer-info strong {
+
+    display: block;
+
+    color: #111827;
+
+}
+
+
+.customer-info small {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+}
+
+
+/* CONTACT */
+
+.contact-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+}
+
+
+/* STATUS */
+
+.status {
+
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+}
+
+
+.status.active {
+
+    background: #dcfce7;
+
+    color: #15803d;
+
+}
+
+
+.status.pending {
+
+    background: #fef3c7;
+
+    color: #b45309;
+
+}
+
+
+.status.inactive {
+
+    background: #fee2e2;
+
+    color: #b91c1c;
+
+}
+
+
+/* ACTIONS */
+
+.actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.actions form {
+
+    margin: 0;
+
+}
+
+
+.action-btn {
+
+    border: none;
+
+    background: none;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+.action-btn.edit {
+
+    color: #4f46e5;
+
+}
+
+
+.action-btn.delete {
+
+    color: #dc2626;
+
+}
+
+
+.muted {
+
+    color: #94a3b8;
+
+}
+
+
+/* EMPTY STATE */
+
+.empty-state {
+
+    text-align: center;
+
+    padding: 60px 20px;
+
+}
+
+
+.empty-icon {
+
+    font-size: 42px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.empty-state h3 {
+
+    margin: 0 0 8px;
+
+    color: #111827;
+
+}
+
+
+.empty-state p {
+
+    color: #64748b;
+
+    font-size: 14px;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+
+    .summary-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .filter-form {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .page-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+    }
+
+}
+
+</style>
 
 {% endblock %}
